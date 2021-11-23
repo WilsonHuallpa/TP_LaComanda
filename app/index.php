@@ -35,7 +35,7 @@ $app->group('/usuarios', function (RouteCollectorProxy $group) {
   });
 
 $app->get('[/]', function (Request $request, Response $response) {    
-    $response->getBody()->write("Slim Framework 4 PHP wilson huallpa");
+    $response->getBody()->write("Slim Framework 4 PHP wilson huallpa porcel");
     return $response;
 
 });
