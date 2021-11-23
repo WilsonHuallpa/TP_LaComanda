@@ -2,9 +2,16 @@
 
 class Logger
 {
-    public static function LogOperacion($request, $response, $next)
+    public static function LogOperacion($request, $handler)
     {
-        $retorno = $next($request, $response);
-        return $retorno;
+        // $retorno = $next($request, $response);
+
+        $reponse = $handler->handle($request);
+
+        // return $retorno;
+        return $response;
     }
+
+
+
 }
