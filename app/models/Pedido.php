@@ -114,5 +114,16 @@ class Pedido
         return $consulta->fetchAll(PDO::FETCH_ASSOC);
      
     }
+    public static function obtenerTodosParaPDF()
+    {
+        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+        $consulta = $objAccesoDatos->prepararConsulta("SELECT pedidos.fecha as fecha, productos.nombre as producto, pedidos.cantidad as cantidad FROM pedidos INNER JOIN productos ON pedidos.id_producto = productos.id ");
+        $consulta->execute();
+
+        return $consulta->fetchAll(PDO::FETCH_ASSOC);
+    }
+  
+
+
   
 }
