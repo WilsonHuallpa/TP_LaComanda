@@ -65,6 +65,7 @@ $app->group('/pedidos', function (RouteCollectorProxy $group) {
 $group->get('/listados', \PedidoController::class . ':TraerTodos')->add(\MWComanda::class . ':ValidarSocio')->add(\MWComanda::class . ':ValidarToken');
 $group->get('/pendientes', \PedidoController::class . ':TraerPedidoPendiente')->add(\MWComanda::class . ':ValidarToken');
 $group->post('/alta', \PedidoController::class . ':CargarUno')->add(\MWComanda::class . ':ValidarMozo')->add(\MWComanda::class . ':ValidarToken');
+
 $group->post('/tomarPedido', \PedidoController::class . ':tomarPedido')->add(\MWComanda::class . ':ValidarToken');
 $group->post('/VerMiPedido', \PedidoController::class . ':TraerTodosPorParametro');
 $group->post('/servir', \PedidoController::class . ':ServirPedido')->add(\MWComanda::class . ':ValidarToken');
