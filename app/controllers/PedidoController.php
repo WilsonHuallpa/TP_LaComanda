@@ -163,6 +163,7 @@ class PedidoController extends Pedido implements IApiUsable {
       $lista = Pedido::ObtenerTiempoDePedido($codigo, $numeroPedido);
         $payload = json_encode(array("mensaje" => $lista));
 
+        //chequear
         $response->getBody()->write($payload);
         return $response
           ->withHeader('Content-Type', 'application/json');
