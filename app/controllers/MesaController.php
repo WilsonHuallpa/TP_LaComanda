@@ -147,16 +147,19 @@ class MesaController extends Mesa implements IApiUsable
     public function cambiarEstadoCerrado($request, $response, $args)
     {  
       $parametros = $request->getParsedBody();
-      $codigo = $parametros['codigo'];
+      $codigo_mesa = $parametros['codigoMesa'];
+
      
       try {
-          $pedidoAServir = Pedido::TraerUnPedido($codigo);
-          $mesaComiendo = Mesa::obtenerMesa($codigo);   
-          if($pedidoAServir->id_mesa == $mesaComiendo->id && $mesaComiendo->id_estado == 3){
+        
+          $mesaComiendo = Mesa::obtenerMesa($codigo_mesa);   
+          if( $mesaComiendo->id_estado != 4){
             $mesaComiendo->id_estado = 4;
             $mesaComiendo->modificarBD();
-            $payload = json_encode(array("mesaje" => "Codigo de pedido: " . $codigo ." cerrado."));
-          }
+            $payload = json_encode(array("mesaje" => "Codigo de pedido: " . $codigo_mesa ." cerrado."));
+          }else {
+            $payload = json_encode(array("mesaje" => "Codigo de pedido: " . $codigo_mesa ." YA se encuentra cerrado."));
+          }  
       
       }
       catch(Exception $e) {
