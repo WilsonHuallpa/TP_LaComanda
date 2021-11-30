@@ -33,7 +33,7 @@ class Usuario
     public static function obtenerTodos()
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
-        $consulta = $objAccesoDatos->prepararConsulta("SELECT id, nombre, mail, clave, id_tipo_empleado FROM usuarios");
+        $consulta = $objAccesoDatos->prepararConsulta("SELECT id, nombre, mail, clave, id_tipo_empleado, estado FROM usuarios");
         $consulta->execute();
 
         return $consulta->fetchAll(PDO::FETCH_CLASS, 'Usuario');

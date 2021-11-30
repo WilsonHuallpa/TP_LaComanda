@@ -177,13 +177,11 @@ class PedidoController extends Pedido implements IApiUsable {
 
       $payload =  AutentificadorJWT::ObtenerData($token);
       $id_empleado = $payload->id;
-      //$horaEntrega = date('H:i');
      
       try {
           $pedidoAServir = Pedido::TraerUnPedidoId($id_empleado);   
           if($pedidoAServir->id_estado_pedido == 2){
             $pedidoAServir->id_estado_pedido = 3;
-            // $pedidoAServir->hora_entrega = $horaEntrega;
             $pedidoAServir->modificarPedido();
             $payload = json_encode(array("mesaje" => "Codigo de pedido: " . $pedidoAServir->codigo . " Listo para servir."));
           }
