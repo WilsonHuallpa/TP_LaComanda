@@ -15,6 +15,7 @@ require_once './controllers/UsuarioController.php';
 require_once './controllers/ProductoController.php';
 require_once './controllers/MesaController.php';
 require_once './controllers/PedidoController.php';
+require_once './middlewares/AutentificadorJWT.php';
 require_once './db/AccesoDatos.php';
 require_once './middlewares/MWComanda.php';
 
