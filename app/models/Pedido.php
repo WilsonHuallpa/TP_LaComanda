@@ -76,11 +76,12 @@ class Pedido
     }
 
  
-    public static function ObtenerTiempoDePedido($codigo){
+    public static function ObtenerTiempoDePedido($codigo , $numero){
 
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
-        $consulta = $objAccesoDatos->prepararConsulta("SELECT codigo, SUM(tiempo) as Minutos  FROM pedidos WHERE codigo = :codigo");
+        $consulta = $objAccesoDatos->prepararConsulta("SELECT pedidos.codigo, SUM(tiempo) as Minutos FROM pedidos INNER JOIN mesas ON pedidos.id_mesa = mesas.id AND mesas.codigo = :codigo AND pedidos.codigo = :numero");
         $consulta->bindValue(':codigo', $codigo, PDO::PARAM_STR);
+        $consulta->bindValue(':numero', $codigo, PDO::PARAM_STR);
         $consulta->execute();
         return $consulta->fetchAll(PDO::FETCH_ASSOC);
         

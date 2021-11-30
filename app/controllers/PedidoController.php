@@ -158,8 +158,9 @@ class PedidoController extends Pedido implements IApiUsable {
       $parametros = $request->getParsedBody();
 
       $codigo = $parametros['codigo'];
+      $numeroPedido = $parametros['numero']:
   
-      $lista = Pedido::ObtenerTiempoDePedido($codigo);
+      $lista = Pedido::ObtenerTiempoDePedido($codigo, $numero);
         $payload = json_encode(array("mensaje" => $lista));
 
         $response->getBody()->write($payload);

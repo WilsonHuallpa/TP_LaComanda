@@ -68,6 +68,7 @@ $group->post('/alta', \PedidoController::class . ':CargarUno')->add(\MWComanda::
 
 $group->post('/tomarPedido', \PedidoController::class . ':tomarPedido')->add(\MWComanda::class . ':ValidarToken');
 $group->post('/VerMiPedido', \PedidoController::class . ':TraerTodosPorParametro');
+//poner el codigo de mesa  el del pedido
 $group->post('/servir', \PedidoController::class . ':ServirPedido')->add(\MWComanda::class . ':ValidarToken');
 
 });
