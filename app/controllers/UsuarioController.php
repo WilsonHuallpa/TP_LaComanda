@@ -67,15 +67,7 @@ class UsuarioController extends Usuario implements IApiUsable
     {
         $lista = Usuario::obtenerTodos();
 
-        echo "listado Empleado \n" ;
-        foreach ($lista as $key => $Empleado) {
-
-          echo $Empleado->MostrarDatos();
-        }
-
-        echo "\n";
-
-        $payload = json_encode(array(" 200" => "ok"));
+        $payload = json_encode(array("Lista De empleados" => $lista));
 
         $response->getBody()->write($payload);
         return $response->withHeader('Content-Type', 'application/json');
