@@ -171,11 +171,12 @@ class PedidoController extends Pedido implements IApiUsable {
 
     public function ServirPedido($request, $response, $args) {
 
-
+      $parametros = $request->getParsedBody();
       $header = $request->getHeaderLine('Authorization');
       $token = trim(explode("Bearer", $header)[1]);
 
       $payload =  AutentificadorJWT::ObtenerData($token);
+
       $id_empleado = $payload->id;
      
       try {
@@ -183,15 +184,16 @@ class PedidoController extends Pedido implements IApiUsable {
           if($pedidoAServir->id_estado_pedido == 2){
             $pedidoAServir->id_estado_pedido = 3;
             $pedidoAServir->modificarPedido();
-            $payload = json_encode(array("mesaje" => "Codigo de pedido: " . $pedidoAServir->codigo . " Listo para servir."));
+            $respuestaApi = json_encode(array("mesaje" => "Codigo de pedido: " . $pedidoAServir->codigo . " Listo para servir."));
+          }else {
+            $respuestaApi = json_encode(array("mesaje" => "Codigo de pedido: " . $pedidoAServir->codigo . " no esta lista para servir."));
           }
         
-  
       }
       catch(Exception $e) {
-        $payload = json_encode(array("Estado" => "ERROR", "Mensaje" => $e->getMessage()));
+        $respuestaApi = json_encode(array("Estado" => "ERROR", "Mensaje" => $e->getMessage()));
       }       
-      $response->getBody()->write($payload);
+      $response->getBody()->write($respuestaApi);
       return $response->withHeader('Content-Type', 'application/json');
   }
 
