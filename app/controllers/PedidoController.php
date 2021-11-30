@@ -29,6 +29,7 @@ class PedidoController extends Pedido implements IApiUsable {
         $pedido->id_estado_pedido = $id_estado_pedido;
         $pedido->id_empleado = 0;
         $pedido->fecha = $fecha;
+        $pedido->tiempo = 0;
 
 
         if($_FILES){
