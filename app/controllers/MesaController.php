@@ -96,7 +96,6 @@ class MesaController extends Mesa implements IApiUsable
       $codigo = $parametros['codigo'];
 
       try {
-          $pedidoAServir = Pedido::obtenerTodos();
 
           $mesaComiendo = Mesa::obtenerMesa($codigo); 
           if($mesaComiendo->id_estado == 1){
@@ -105,6 +104,10 @@ class MesaController extends Mesa implements IApiUsable
             $payload = json_encode(array("mesaje" => "Codigo de pedido: " . $codigo ." comiendo."));
           }else if($mesaComiendo->id_estado == 2){
             $payload = json_encode(array("mesaje" => "mesa comiendo. " . $codigo ." comiendo."));
+          }else if(($mesaComiendo->id_estado == 3)){
+            $payload = json_encode(array("mesaje" => "mesa pagando. " . $codigo ."."));
+          }else {
+            $payload = json_encode(array("mesaje" => "mesa cerrado. " . $codigo ."."));
           }
       
       }
