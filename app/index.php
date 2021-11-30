@@ -33,7 +33,6 @@ $app->addBodyParsingMiddleware();
 $app->addErrorMiddleware(true, true, true);
 
 // peticiones
-
 $app->group('/empleado', function (RouteCollectorProxy $group) {
   $group->post('/login',\UsuarioController::class . ':LoginEmpleado');
   $group->get('/listados', \UsuarioController::class . ':TraerTodos')->add(\MWComanda::class . ':ValidarSocio')->add(\MWComanda::class . ':ValidarToken');
@@ -44,10 +43,10 @@ $app->group('/empleado', function (RouteCollectorProxy $group) {
  
 });
 
-$app->group('/productos', function (RouteCollectorProxy $group) {
-  $group->get('[/pendientes]', \ProductoController::class . ':TraerTodos') ;
-  $group->post('[/]', \ProductoController::class . ':CargarUno');
-
+$app->group('/producto', function (RouteCollectorProxy $group) {
+  $group->post('/alta', \ProductoController::class . ':CargarUno');
+  $group->get('/listados', \ProductoController::class . ':TraerTodos') ;
+  
 });
 
 $app->group('/mesa', function (RouteCollectorProxy $group) {

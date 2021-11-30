@@ -5,6 +5,33 @@ require_once './interfaces/IApiUsable.php';
 
 class UsuarioController extends Usuario implements IApiUsable
 {
+
+    public function LoginEmpleado($request, $response, $args) {
+
+      try{
+        $parametros = $request->getParsedBody();
+        $usuario = $parametros['nombre'];
+        $clave = $parametros['clave'];
+
+        $usser =  Usuario::VerificarDatos($usuario, $clave);
+
+        $usuario = $usser->nombre;
+        $perfil = $usser->id_tipo_empleado;
+        $id = $usser->id;
+        $datos = array('id'=> $id ,'usuario' => $usuario, 'perfil' => $perfil);
+
+        $token = AutentificadorJWT::CrearToken($datos);
+        $payload = json_encode(array('jwt' => $token));
+
+      }catch (Exception $e) {
+          $payload = json_encode(array('error' => $e->getMessage()));
+      }
+  
+      $response->getBody()->write($payload);
+      return $response->withHeader('Content-Type', 'application/json');
+    }
+
+
     public function CargarUno($request, $response, $args)
     {
         $parametros = $request->getParsedBody();
@@ -67,7 +94,7 @@ class UsuarioController extends Usuario implements IApiUsable
     {
         $lista = Usuario::obtenerTodos();
 
-        $payload = json_encode(array("Lista-De-empleados" => $lista));
+        $payload = json_encode(array("ListaEmpleados" => $lista));
 
         $response->getBody()->write($payload);
         return $response->withHeader('Content-Type', 'application/json');
@@ -105,30 +132,7 @@ class UsuarioController extends Usuario implements IApiUsable
           ->withHeader('Content-Type', 'application/json');*/
     }
 
-    public function LoginEmpleado($request, $response, $args) {
-
-      try{
-        $parametros = $request->getParsedBody();
-        $usuario = $parametros['nombre'];
-        $clave = $parametros['clave'];
-  
-        $usser =  Usuario::VerificarDatos($usuario, $clave);
-
-        $usuario = $usser->nombre;
-        $perfil = $usser->id_tipo_empleado;
-        $id = $usser->id;
-        $datos = array('id'=> $id ,'usuario' => $usuario, 'perfil' => $perfil);
-  
-        $token = AutentificadorJWT::CrearToken($datos);
-        $payload = json_encode(array('jwt' => $token));
-
-      }catch (Exception $e) {
-          $payload = json_encode(array('error' => $e->getMessage()));
-      }
-   
-      $response->getBody()->write($payload);
-      return $response->withHeader('Content-Type', 'application/json');
-    }
+ 
 
     public function AltaPorCsv($request, $response, $args){
 
