@@ -9,6 +9,12 @@ class Usuario
     public $id_tipo_empleado;
 
 
+
+    public function MostrarDatos(){
+
+        return "Nombre: " . $this->nombre . " mail: " . $this->mail . " Id_tipo_Empleado: " . $this->id_tipo_empleado;
+    }
+
     public function crearUsuario()
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();

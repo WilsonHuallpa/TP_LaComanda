@@ -34,133 +34,47 @@ $app->addBodyParsingMiddleware();
 $app->addErrorMiddleware(true, true, true);
 
 // peticiones
-$app->group('/login', function (RouteCollectorProxy $group){
-  $group->post('/',\UsuarioController::class . ':LoginEmpleado');
 
+$app->group('/empleado', function (RouteCollectorProxy $group) {
+  $group->post('/login',\UsuarioController::class . ':LoginEmpleado');
+  $group->get('/listados', \UsuarioController::class . ':TraerTodos')->add(\MWComanda::class . ':ValidarSocio')->add(\MWComanda::class . ':ValidarToken');
+  $group->post('/alta', \UsuarioController::class . ':CargarUno')->add(\MWComanda::class . ':ValidarSocio')->add(\MWComanda::class . ':ValidarToken');
+
+  $group->post('/altaEmpleadocsv', \UsuarioController::class . ':AltaPorCsv');
+  $group->get('/listadoscsv', \UsuarioController::class . ':Mostrarcsv');
+ 
 });
-$app->group('/usuarios', function (RouteCollectorProxy $group) {
-    $group->get('/listados', \UsuarioController::class . ':TraerTodos');
-    $group->post('/altaEmpleado', \UsuarioController::class . ':CargarUno')->add(\MWComanda::class . ':ValidarSocio')->add(\MWComanda::class . ':ValidarToken');
-    $group->post('/altaEmpleadocsv', \UsuarioController::class . ':AltaPorCsv');
-    $group->get('/listadoscsv', \UsuarioController::class . ':Mostrarcsv');
-    /*
-    $group->get('/{usuario}', \UsuarioController::class . ':TraerUno');
-    $group->put('[/]', \UsuarioController::class . ':ModificarUno');
-    $group->delete('/{id}', \UsuarioController::class . ':BorrarUno');
-    ->add(\MWComanda::class . ':ValidarSocio')*/
-});
-//->add(\Credenciales::class . ":VerificadorDeCredenciales");
 
 $app->group('/productos', function (RouteCollectorProxy $group) {
-    $group->get('[/pendientes]', \ProductoController::class . ':TraerTodos') ;
-    $group->post('[/]', \ProductoController::class . ':CargarUno');
-    /*
-    $group->get('/{producto}', \ProductoController::class . ':TraerUno');
-    $group->put('[/]', \ProductoController::class . ':ModificarUno');
-    $group->delete('/{id}', \ProductoController::class . ':BorrarUno');*/
+  $group->get('[/pendientes]', \ProductoController::class . ':TraerTodos') ;
+  $group->post('[/]', \ProductoController::class . ':CargarUno');
+
 });
 
-$app->group('/mesas', function (RouteCollectorProxy $group) {
-  $group->get('[/]', \MesaController::class . ':TraerTodos');
-  $group->post('[/]', \MesaController::class . ':CargarUno');
-/*
-  $group->get('/{mesa}', \MesaController::class . ':TraerUno');
-  $group->put('[/]', \MesaController::class . ':ModificarUno');
-  $group->delete('/{id}', \MesaController::class . ':BorrarUno');*/
+$app->group('/mesa', function (RouteCollectorProxy $group) {
+$group->get('/listados', \MesaController::class . ':TraerTodos')->add(\MWComanda::class . ':ValidarSocio')->add(\MWComanda::class . ':ValidarToken');
+$group->post('/alta', \MesaController::class . ':CargarUno');
+$group->post('/estado/comiendo', \MesaController::class . ':cambiarEstadoComiendo')->add(\MWComanda::class . ':ValidarMozo')->add(\MWComanda::class . ':ValidarToken');
+$group->post('/estado/pagando', \MesaController::class . ':cambiarEstadoPagando')->add(\MWComanda::class . ':ValidarMozo')->add(\MWComanda::class . ':ValidarToken');
+$group->post('/estado/cerrado', \MesaController::class . ':cambiarEstadoCerrado')->add(\MWComanda::class . ':ValidarSocio')->add(\MWComanda::class . ':ValidarToken');
+$group->get('/masUsado', \MesaController::class . ':BuscarMesaMasUsada')->add(\MWComanda::class . ':ValidarSocio')->add(\MWComanda::class . ':ValidarToken');
+
 });
 $app->group('/pedidos', function (RouteCollectorProxy $group) {
 
-  $group->get('/listados', \PedidoController::class . ':TraerTodos');
-  $group->get('/pendientes', \PedidoController::class . ':TraerPedidoPendiente')->add(\MWComanda::class . ':ValidarToken');
-  $group->post('/alta', \PedidoController::class . ':CargarUno')->add(\MWComanda::class . ':ValidarMozo')->add(\MWComanda::class . ':ValidarToken');
- 
-  /*
-  $group->get('/{pedido}', \PedidoController::class . ':TraerUno');
-  $group->put('[/]', \PedidoController::class . ':ModificarUno');
-  $group->delete('/{id}', \PedidoController::class . ':BorrarUno');*/
+$group->get('/listados', \PedidoController::class . ':TraerTodos')->add(\MWComanda::class . ':ValidarSocio')->add(\MWComanda::class . ':ValidarToken');
+$group->get('/pendientes', \PedidoController::class . ':TraerPedidoPendiente')->add(\MWComanda::class . ':ValidarToken');
+$group->post('/alta', \PedidoController::class . ':CargarUno')->add(\MWComanda::class . ':ValidarMozo')->add(\MWComanda::class . ':ValidarToken');
+$group->post('/tomarPedido', \PedidoController::class . ':tomarPedido')->add(\MWComanda::class . ':ValidarToken');
+$group->post('/VerMiPedido', \PedidoController::class . ':TraerTodosPorParametro');
+$group->post('/servir', \PedidoController::class . ':ServirPedido')->add(\MWComanda::class . ':ValidarToken');
+
 });
 
+$app->post('/encuesta', \MesaController::class . ':RegistrarEncuesta'); 
+$app->get('/comentarios/mejores', \MesaController::class . ':MejoresComentarios')->add(\MWComanda::class . ':ValidarSocio')->add(\MWComanda::class . ':ValidarToken');
 
 
-
-
- // $this->post('/',empleado::class.':ModificarUno')->add(MWComanda::class.':MWValidarAlta')->add(MWComanda::class.':MWValidarIdExistente');
-
-  // JWT test routes
-  /*
-$app->group('/jwt', function (RouteCollectorProxy $group) {
-
-  $group->post('/crearToken', function (Request $request, Response $response) {    
-    $parametros = $request->getParsedBody();
-
-    $usuario = $parametros['usuario'];
-    $perfil = $parametros['perfil'];
-    $alias = $parametros['alias'];
-
-    $datos = array('usuario' => $usuario, 'perfil' => $perfil, 'alias' => $alias);
-
-    $token = AutentificadorJWT::CrearToken($datos);
-    $payload = json_encode(array('jwt' => $token));
-
-    $response->getBody()->write($payload);
-    return $response
-      ->withHeader('Content-Type', 'application/json');
-  });
-
-  $group->get('/devolverPayLoad', function (Request $request, Response $response) {
-    $header = $request->getHeaderLine('Authorization');
-    $token = trim(explode("Bearer", $header)[1]);
-
-    try {
-      $payload = json_encode(array('payload' => AutentificadorJWT::ObtenerPayLoad($token)));
-    } catch (Exception $e) {
-      $payload = json_encode(array('error' => $e->getMessage()));
-    }
-
-    $response->getBody()->write($payload);
-    return $response
-      ->withHeader('Content-Type', 'application/json');
-  });
-
-  $group->get('/devolverDatos', function (Request $request, Response $response) {
-    $header = $request->getHeaderLine('Authorization');
-    $token = trim(explode("Bearer", $header)[1]);
-
-    try {
-      $payload = json_encode(array('datos' => AutentificadorJWT::ObtenerData($token)));
-    } catch (Exception $e) {
-      $payload = json_encode(array('error' => $e->getMessage()));
-    }
-
-    $response->getBody()->write($payload);
-    return $response
-      ->withHeader('Content-Type', 'application/json');
-  });
-
-  $group->get('/verificarToken', function (Request $request, Response $response) {
-    $header = $request->getHeaderLine('Authorization');
-    $token = trim(explode("Bearer", $header)[1]);
-    $esValido = false;
-
-    try {
-      AutentificadorJWT::verificarToken($token);
-      $esValido = true;
-    } catch (Exception $e) {
-      $payload = json_encode(array('error' => $e->getMessage()));
-    }
-
-    if ($esValido) {
-      $payload = json_encode(array('valid' => $esValido));
-    }
-
-    $response->getBody()->write($payload);
-    return $response
-      ->withHeader('Content-Type', 'application/json');
-  });
-});*/
-
-
-  
 // Run app
 $app->run();
 
