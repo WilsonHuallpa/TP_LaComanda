@@ -2,7 +2,7 @@
 
 require_once './models/Pedido.php';
 require_once './interfaces/IApiUsable.php';
-
+require_once './models/Pdf.php';
 class PedidoController extends Pedido implements IApiUsable {
 
     public function CargarUno($request, $response, $args) {
@@ -200,34 +200,32 @@ class PedidoController extends Pedido implements IApiUsable {
     
 
     public function ModificarUno($request, $response, $args)
-    {/*
-        $parametros = $request->getParsedBody();
-
-        $usuario =  new Usuario();
-        $usuario->id = $parametros['id'];
-        $usuario->usuario = $parametros['usuario'];
-        $usuario->clave = password_hash($parametros['clave'], PASSWORD_DEFAULT);
-
-        Usuario::modificarUsuario($usuario);
-
-        $payload = json_encode(array("mensaje" => "Usuario modificado con exito"));
-
-        $response->getBody()->write($payload);
-        return $response
-          ->withHeader('Content-Type', 'application/json');*/
+    {
     }
 
 
     public function BorrarUno($request, $response, $args)
     {
-/*
-        $usuarioId = $args['id'];
-        Usuario::borrarUsuario($usuarioId);
 
-        $payload = json_encode(array("mensaje" => "Usuario borrado con exito"));
+    }
 
-        $response->getBody()->write($payload);
-        return $response
-          ->withHeader('Content-Type', 'application/json');*/
+    public function DescargarPDFMayorImpor($request, $response, $args){
+
+      $lista = Pedido::obtenerTodosParaPDF();
+      $pdf = new PDF();
+      $pdf->AliasNbPages();
+      $pdf->AddPage();
+      $pdf->SetFont('Times','',16);
+
+      foreach ($lista as $key => $row) {
+        $pdf->cell(30,10,$row['fecha'],1,0,'C',0);
+        $pdf->cell(40,10,$row['producto'],1,0,'C',0);
+        $pdf->cell(30,10,$row['cantidad'],1,1,'C',0);
+      }
+  
+      $pdf->Output('Archivos/pedidos.pdf', 'F');
+      $payload = json_encode(array("lista de pedidos" => $lista));
+      $response->getBody()->write($payload);
+      return $response->withHeader('Content-Type', 'application/json');
     }
 }

@@ -19,6 +19,7 @@ require_once './middlewares/AutentificadorJWT.php';
 require_once './db/AccesoDatos.php';
 require_once './middlewares/MWComanda.php';
 require_once './models/Archivos.php';
+require_once './models/operacion.php';
 
 // Load ENV
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
@@ -37,10 +38,10 @@ $app->group('/empleado', function (RouteCollectorProxy $group) {
   $group->post('/login',\UsuarioController::class . ':LoginEmpleado');
   $group->get('/listados', \UsuarioController::class . ':TraerTodos')->add(\MWComanda::class . ':ValidarSocio')->add(\MWComanda::class . ':ValidarToken');
   $group->post('/alta', \UsuarioController::class . ':CargarUno')->add(\MWComanda::class . ':ValidarSocio')->add(\MWComanda::class . ':ValidarToken');
-
   $group->post('/altaEmpleadocsv', \UsuarioController::class . ':AltaPorCsv');
   $group->get('/listadoscsv', \UsuarioController::class . ':Mostrarcsv');
- 
+  $group->delete('/eliminar/{id}', \UsuarioController::class . ':BorrarUno')->add(\MWComanda::class . ':ValidarSocio')->add(\MWComanda::class . ':ValidarToken');;
+  $group->put('/suspender', \UsuarioController::class . ':ModificarUno')->add(\MWComanda::class . ':ValidarSocio')->add(\MWComanda::class . ':ValidarToken');;
 });
 
 $app->group('/producto', function (RouteCollectorProxy $group) {
@@ -50,31 +51,27 @@ $app->group('/producto', function (RouteCollectorProxy $group) {
 });
 
 $app->group('/mesa', function (RouteCollectorProxy $group) {
-$group->get('/listados', \MesaController::class . ':TraerTodos')->add(\MWComanda::class . ':ValidarSocio')->add(\MWComanda::class . ':ValidarToken');
-$group->post('/alta', \MesaController::class . ':CargarUno')->add(\MWComanda::class . ':ValidarSocio')->add(\MWComanda::class . ':ValidarToken');
-
-
-$group->post('/estado/comiendo', \MesaController::class . ':cambiarEstadoComiendo')->add(\MWComanda::class . ':ValidarMozo')->add(\MWComanda::class . ':ValidarToken');
-$group->post('/estado/pagando', \MesaController::class . ':cambiarEstadoPagando')->add(\MWComanda::class . ':ValidarMozo')->add(\MWComanda::class . ':ValidarToken');
-$group->post('/estado/cerrado', \MesaController::class . ':cambiarEstadoCerrado')->add(\MWComanda::class . ':ValidarSocio')->add(\MWComanda::class . ':ValidarToken');
-$group->get('/masUsado', \MesaController::class . ':BuscarMesaMasUsada')->add(\MWComanda::class . ':ValidarSocio')->add(\MWComanda::class . ':ValidarToken');
+  $group->get('/listados', \MesaController::class . ':TraerTodos')->add(\MWComanda::class . ':SumarOperacion')->add(\MWComanda::class . ':ValidarSocio')->add(\MWComanda::class . ':ValidarToken');
+  $group->post('/alta', \MesaController::class . ':CargarUno')->add(\MWComanda::class . ':SumarOperacion')->add(\MWComanda::class . ':ValidarSocio')->add(\MWComanda::class . ':ValidarToken');
+  $group->post('/estado/comiendo', \MesaController::class . ':cambiarEstadoComiendo')->add(\MWComanda::class . ':SumarOperacion')->add(\MWComanda::class . ':ValidarMozo')->add(\MWComanda::class . ':ValidarToken');
+  $group->post('/estado/pagando', \MesaController::class . ':cambiarEstadoPagando')->add(\MWComanda::class . ':SumarOperacion')->add(\MWComanda::class . ':ValidarMozo')->add(\MWComanda::class . ':ValidarToken');
+  $group->post('/estado/cerrado', \MesaController::class . ':cambiarEstadoCerrado')->add(\MWComanda::class . ':SumarOperacion')->add(\MWComanda::class . ':ValidarSocio')->add(\MWComanda::class . ':ValidarToken');
+  $group->get('/masUsado', \MesaController::class . ':BuscarMesaMasUsada')->add(\MWComanda::class . ':SumarOperacion')->add(\MWComanda::class . ':ValidarSocio')->add(\MWComanda::class . ':ValidarToken');
 
 });
 $app->group('/pedidos', function (RouteCollectorProxy $group) {
-
-$group->get('/listados', \PedidoController::class . ':TraerTodos')->add(\MWComanda::class . ':ValidarSocio')->add(\MWComanda::class . ':ValidarToken');
-$group->get('/pendientes', \PedidoController::class . ':TraerPedidoPendiente')->add(\MWComanda::class . ':ValidarToken');
-$group->post('/alta', \PedidoController::class . ':CargarUno')->add(\MWComanda::class . ':ValidarMozo')->add(\MWComanda::class . ':ValidarToken');
-
-$group->post('/tomarPedido', \PedidoController::class . ':tomarPedido')->add(\MWComanda::class . ':ValidarToken');
-$group->post('/VerMiPedido', \PedidoController::class . ':TraerTodosPorParametro');
-//poner el codigo de mesa  el del pedido
-$group->post('/servir', \PedidoController::class . ':ServirPedido')->add(\MWComanda::class . ':ValidarToken');
+  $group->get('/listados', \PedidoController::class . ':TraerTodos')->add(\MWComanda::class . ':SumarOperacion')->add(\MWComanda::class . ':ValidarSocio')->add(\MWComanda::class . ':ValidarToken');
+  $group->get('/pendientes', \PedidoController::class . ':TraerPedidoPendiente')->add(\MWComanda::class . ':SumarOperacion')->add(\MWComanda::class . ':ValidarToken');
+  $group->post('/alta', \PedidoController::class . ':CargarUno')->add(\MWComanda::class . ':SumarOperacion')->add(\MWComanda::class . ':ValidarMozo')->add(\MWComanda::class . ':ValidarToken');
+  $group->post('/tomarPedido', \PedidoController::class . ':tomarPedido')->add(\MWComanda::class . ':SumarOperacion')->add(\MWComanda::class . ':ValidarToken');
+  $group->post('/VerMiPedido', \PedidoController::class . ':TraerTodosPorParametro');
+  $group->post('/servir', \PedidoController::class . ':ServirPedido')->add(\MWComanda::class . ':SumarOperacion')->add(\MWComanda::class . ':ValidarToken');
+  $group->get('/pdf', \PedidoController::class . ':DescargarPDFMayorImpor');
 
 });
 
 $app->post('/encuesta', \MesaController::class . ':RegistrarEncuesta'); 
-$app->get('/comentarios/mejores', \MesaController::class . ':MejoresComentarios')->add(\MWComanda::class . ':ValidarSocio')->add(\MWComanda::class . ':ValidarToken');
+$app->get('/comentarios/mejores', \MesaController::class . ':MejoresComentarios')->add(\MWComanda::class . ':SumarOperacion')->add(\MWComanda::class . ':ValidarSocio')->add(\MWComanda::class . ':ValidarToken');
 
 
 // Run app

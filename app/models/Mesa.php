@@ -35,6 +35,9 @@ class Mesa
 
         return $consulta->fetchObject('Mesa');
     }
+
+
+
    
     public function modificarBD()
     {
@@ -54,6 +57,15 @@ class Mesa
 
         return $consulta->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public static function cambiarEstadoComiendo()
+    {
+        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+        $consulta = $objAccesoDatos->prepararConsulta(" UPDATE mesas INNER JOIN pedidos ON pedidos.id_estado_pedido = 3 AND pedidos.id_mesa = mesas.id AND mesas.id_estado = 1 SET mesas.id_estado = 2");
+        $consulta->execute();
+
+    }
+
        
 
 }

@@ -85,31 +85,34 @@ class MWComanda
         return $response
           ->withHeader('Content-Type', 'application/json');
     }
-/*
-    public static function SumarOperacion($request, $response, $next) {
-      $payload = $request->getAttribute("payload")["Payload"];
-      $data = $payload->data;
-      $nombre_operacion = $_SERVER["REQUEST_URI"];
-      date_default_timezone_set("America/Argentina/Buenos_Aires");
-      $fecha = date('Y-m-d');
-      
-      try {
-          $operacion = new App\Models\Operacion;        
-          $operacion->id_empleado = $data->id;
-          $operacion->operacion = $nombre_operacion;
-          $operacion->fecha = $fecha;
-          $operacion->save();
-          return $next($request, $response);
-      }
-      catch(Exception $e) {
-          $error = $e->getMessage();
-          $mensaje = array("Estado" => "ERROR", "Mensaje" => "Error al guaradar operación", "Excepción" => $error);
-          return $response->withJson($mensaje, 200);
-      } 
-*/
 
+  public static function SumarOperacion(Request $request, RequestHandler $handler) {
+    $header = $request->getHeaderLine('Authorization');
+    $token = trim(explode("Bearer", $header)[1]);
+    $payload =  AutentificadorJWT::ObtenerData($token);
 
-
+    $nombre_operacion = $_SERVER["REQUEST_URI"];
+    date_default_timezone_set("America/Argentina/Buenos_Aires");
+    $fecha = date('Y-m-d');
+    
+    try {
+        $operacion = new Operacion;        
+        $operacion->id_empleado = $payload->id;
+        $operacion->operacion = $nombre_operacion;
+        $operacion->fecha = $fecha;
+        $operacion->GuardarBD();
+        $APi = $handler->handle($request);
+        $contenidoAPI = (string)$APi->getBody(); 
+    }
+    catch(Exception $e) {
+      $contenidoAPI = json_encode(array('error' => $e->getMessage()));
+    } 
+    $response = new ResponseMW();
+    $response->getBody()->write($contenidoAPI);
+    return $response
+      ->withHeader('Content-Type', 'application/json');
+  }
 }
+
 
 ?>

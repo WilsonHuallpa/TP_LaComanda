@@ -92,15 +92,18 @@ class MesaController extends Mesa implements IApiUsable
     public function cambiarEstadoComiendo($request, $response, $args)
     {  
       $parametros = $request->getParsedBody();
-      $codigo = $parametros['codigo'];
-     
+
+     //cambiarEstadoComiendo seguir aca.... postman comiendo ..
       try {
-          $pedidoAServir = Pedido::TraerUnPedido($codigo);
-          $mesaComiendo = Mesa::obtenerMesa($codigo);   
-          if($pedidoAServir->id_mesa == $mesaComiendo->id && $mesaComiendo->id_estado == 1){
+          $pedidoAServir = Pedido::obtenerTodos();
+
+          $mesaComiendo = Mesa::obtenerMesa($codigo); 
+          if($mesaComiendo->id_estado == 1){
             $mesaComiendo->id_estado = 2;
             $mesaComiendo->modificarBD();
             $payload = json_encode(array("mesaje" => "Codigo de pedido: " . $codigo ." comiendo."));
+          }else if($mesaComiendo->id_estado == 2){
+            $payload = json_encode(array("mesaje" => "mesa comiendo. " . $codigo ." comiendo."));
           }
       
       }

@@ -102,35 +102,53 @@ class UsuarioController extends Usuario implements IApiUsable
     
     public function ModificarUno($request, $response, $args)
     {
-        /*$parametros = $request->getParsedBody();
+      $parametros = $request->getParsedBody();
+      $usuarioid = $parametros['id'];
+  
+      $auxUsser=Usuario::obtenerUsuarioid($usuarioid);
+      if($auxUsser){
 
-        $usuario =  new Usuario();
-        $usuario->id = $parametros['id'];
-        $usuario->usuario = $parametros['usuario'];
-        $usuario->clave = password_hash($parametros['clave'], PASSWORD_DEFAULT);
+        if($auxUsser->estado == "a"){
+          $auxUsser->estado = "s";
+          $auxUsser->ModificarEstado();
+          $payload = json_encode(array("mensaje" => "Usuario suspendido con exito"));
+        }else if($auxUsser->estado == "e"){
+          $payload = json_encode(array("mensaje" => "Usuario se encuntra eliminado."));
+        }else{
+          $payload = json_encode(array("mensaje" => "Usuario ya se encuentra suspendido."));
+        }
+      }else{
+        $payload = json_encode(array("mensaje" => "Usuario mo se encuentra en el sistema."));
+      }
 
-        Usuario::modificarUsuario($usuario);
-
-        $payload = json_encode(array("mensaje" => "Usuario modificado con exito"));
-
-        $response->getBody()->write($payload);
-        return $response
-          ->withHeader('Content-Type', 'application/json');*/
+    $response->getBody()->write($payload);
+    return $response->withHeader('Content-Type', 'application/json');
     }
 
 
     public function BorrarUno($request, $response, $args)
     {
+      $usuarioid = $args['id'];
+    
+      $auxUsser=Usuario::obtenerUsuarioid($usuarioid);
+      if($auxUsser){
 
-        /*$usuarioId = $args['id'];
-        Usuario::borrarUsuario($usuarioId);
+        if($auxUsser->estado == "a"){
+          $auxUsser->estado = "e";
+          $auxUsser->ModificarEstado();
+          $payload = json_encode(array("mensaje" => "Usuario borrado con exito"));
+        }else if($auxUsser->estado == "s"){
+          $payload = json_encode(array("mensaje" => "Usuario se encuntra suspendido."));
+        }else{
+          $payload = json_encode(array("mensaje" => "Usuario ya se encuentra aliminado."));
+        }
+      }else{
+        $payload = json_encode(array("mensaje" => "Usuario mo se encuentra en el sistema."));
+      }
 
-        $payload = json_encode(array("mensaje" => "Usuario borrado con exito"));
-
-        $response->getBody()->write($payload);
-        return $response
-          ->withHeader('Content-Type', 'application/json');*/
-    }
+      $response->getBody()->write($payload);
+      return $response->withHeader('Content-Type', 'application/json');
+  }
 
  
 
