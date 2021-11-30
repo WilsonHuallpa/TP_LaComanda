@@ -173,6 +173,8 @@ class UsuarioController extends Usuario implements IApiUsable
         $usr->mail = $value['mail'];
         $usr->clave = $value['clave'];
         $usr->id_tipo_empleado = $value['id_tipo_empleado'];
+        $usr->estado = 'a';
+
 
         $usr->crearUsuario();
       }

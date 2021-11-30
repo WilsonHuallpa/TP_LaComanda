@@ -7,7 +7,7 @@ class Usuario
     public $mail;
     public $clave;
     public $id_tipo_empleado;
-
+    public $estado;
 
 
     public function MostrarDatos(){
@@ -18,12 +18,13 @@ class Usuario
     public function crearUsuario()
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
-        $consulta = $objAccesoDatos->prepararConsulta("INSERT INTO usuarios (nombre, mail, clave, id_tipo_empleado  ) VALUES (:nombre, :mail, :clave, :id_tipo_empleado)");
+        $consulta = $objAccesoDatos->prepararConsulta("INSERT INTO usuarios (nombre, mail, clave, id_tipo_empleado, estado  ) VALUES (:nombre, :mail, :clave, :id_tipo_empleado, :estado)");
         $claveHash = password_hash($this->clave, PASSWORD_DEFAULT);
         $consulta->bindValue(':nombre', $this->nombre, PDO::PARAM_STR);
         $consulta->bindValue(':mail', $this->mail, PDO::PARAM_STR);
         $consulta->bindValue(':clave', $claveHash);
         $consulta->bindValue(':id_tipo_empleado', $this->id_tipo_empleado, PDO::PARAM_INT);
+        $consulta->bindValue(':estado', $this->estado, PDO::PARAM_STR);
         $consulta->execute();
 
         return $objAccesoDatos->obtenerUltimoId();
