@@ -91,9 +91,10 @@ class MesaController extends Mesa implements IApiUsable
 
     public function cambiarEstadoComiendo($request, $response, $args)
     {  
+      
       $parametros = $request->getParsedBody();
+      $codigo = $parametros['codigo'];
 
-     //cambiarEstadoComiendo seguir aca.... postman comiendo ..
       try {
           $pedidoAServir = Pedido::obtenerTodos();
 
