@@ -51,7 +51,9 @@ $app->group('/producto', function (RouteCollectorProxy $group) {
 
 $app->group('/mesa', function (RouteCollectorProxy $group) {
 $group->get('/listados', \MesaController::class . ':TraerTodos')->add(\MWComanda::class . ':ValidarSocio')->add(\MWComanda::class . ':ValidarToken');
-$group->post('/alta', \MesaController::class . ':CargarUno');
+$group->post('/alta', \MesaController::class . ':CargarUno')->add(\MWComanda::class . ':ValidarSocio')->add(\MWComanda::class . ':ValidarToken');
+
+
 $group->post('/estado/comiendo', \MesaController::class . ':cambiarEstadoComiendo')->add(\MWComanda::class . ':ValidarMozo')->add(\MWComanda::class . ':ValidarToken');
 $group->post('/estado/pagando', \MesaController::class . ':cambiarEstadoPagando')->add(\MWComanda::class . ':ValidarMozo')->add(\MWComanda::class . ':ValidarToken');
 $group->post('/estado/cerrado', \MesaController::class . ':cambiarEstadoCerrado')->add(\MWComanda::class . ':ValidarSocio')->add(\MWComanda::class . ':ValidarToken');

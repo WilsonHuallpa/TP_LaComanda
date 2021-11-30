@@ -14,7 +14,6 @@ class ProductoController extends Producto implements IApiUsable
         $precio = $parametros['precio'];
         $stock = $parametros['stock'];
         
-        // Creamos el usuario
         $prod = new Producto();
         $prod->id_sector = $sector;
         $prod->nombre = $nombre;
@@ -25,9 +24,8 @@ class ProductoController extends Producto implements IApiUsable
         $payload = json_encode(array("mensaje" => "Producto creado con exito"));
 
         $response->getBody()->write($payload);
-        return $response
-          ->withHeader('Content-Type', 'application/json');
-        //probar el listado y dar el alta de uno producto.
+        return $response->withHeader('Content-Type', 'application/json');
+  
     }
     public function TraerTodos($request, $response, $args)
     {
