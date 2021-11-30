@@ -18,7 +18,7 @@ require_once './controllers/PedidoController.php';
 require_once './middlewares/AutentificadorJWT.php';
 require_once './db/AccesoDatos.php';
 require_once './middlewares/MWComanda.php';
-
+require_once './models/Archivos.php';
 
 // Load ENV
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
