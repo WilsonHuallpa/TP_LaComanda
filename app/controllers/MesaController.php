@@ -94,21 +94,34 @@ class MesaController extends Mesa implements IApiUsable
       
       $parametros = $request->getParsedBody();
       $codigo = $parametros['codigo'];
-
+      $numeroPedido = $parametros['pedido'];
       try {
 
-          $mesaComiendo = Mesa::obtenerMesa($codigo); 
-          if($mesaComiendo->id_estado == 1){
-            $mesaComiendo->id_estado = 2;
-            $mesaComiendo->modificarBD();
-            $payload = json_encode(array("mesaje" => "Codigo de pedido: " . $codigo ." comiendo."));
-          }else if($mesaComiendo->id_estado == 2){
-            $payload = json_encode(array("mesaje" => "mesa comiendo. " . $codigo ." comiendo."));
-          }else if(($mesaComiendo->id_estado == 3)){
-            $payload = json_encode(array("mesaje" => "mesa pagando. " . $codigo ."."));
-          }else {
-            $payload = json_encode(array("mesaje" => "mesa cerrado. " . $codigo ."."));
+          
+          $mesaComiendo = Mesa::obenerMesa($codigo); 
+
+          $pedido = Pedido::TraerUnPedido($numeroPedido);
+
+          if($mesaComiendo === NULL || $pedido === NULL){
+            throw new Exception(' MESA  o CODIGO PEDIDO no exiten.');
           }
+
+          if($mesaComiendo->id_estado == 1){
+
+            if($pedido->id_estado_pedido == 3){
+              $mesaComiendo->id_estado = 2;
+              $mesaComiendo->modificarBD();
+              $payload = json_encode(array("mesaje" => "Codigo de pedido: " . $codigo ." comiendo."));
+            }else{ 
+              $payload = json_encode(array("mesaje" => "su pedido aun no esta listo."));
+            }
+             
+          }else {
+            $payload = json_encode(array("mesaje" => "mesa ocupada: " . $codigo ."."));
+          }
+
+
+      
       
       }
       catch(Exception $e) {

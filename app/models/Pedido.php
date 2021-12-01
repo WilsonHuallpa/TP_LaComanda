@@ -122,6 +122,8 @@ class Pedido
 
         return $consulta->fetchAll(PDO::FETCH_ASSOC);
     }
+   
+
   
 
 
