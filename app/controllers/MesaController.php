@@ -97,7 +97,7 @@ class MesaController extends Mesa implements IApiUsable
       $numeroPedido = $parametros['pedido'];
       try {
 
-          $mesaComiendo = Mesa::obenerMesa($codigo); 
+          $mesaComiendo = Mesa::obtenerMesa($codigo); 
 
           $pedido = Pedido::TraerUnPedido($numeroPedido);
 
@@ -124,14 +124,13 @@ class MesaController extends Mesa implements IApiUsable
       return $response->withHeader('Content-Type', 'application/json');
       
     }
-    
+
     public function cambiarEstadoPagando($request, $response, $args)
     {  
       $parametros = $request->getParsedBody();
       $codigo = $parametros['codigo'];
      
       try {
-          $pedidoAServir = Pedido::TraerUnPedido($codigo);
           $mesaComiendo = Mesa::obtenerMesa($codigo);   
           if($mesaComiendo->id_estado == 2){
             
