@@ -26,7 +26,7 @@ class Mesa
         return $consulta->fetchAll(PDO::FETCH_CLASS, 'Mesa');
     }
 
-    public static function obtenerMesa($codigo)
+    public static function obenerMesa($codigo)
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
         $consulta = $objAccesoDatos->prepararConsulta("SELECT id, codigo, id_estado FROM mesas WHERE codigo = :codigo");
